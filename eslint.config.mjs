@@ -3,15 +3,20 @@ import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import * as importPlugin from 'eslint-plugin-import';
 
 export default tseslint.config(
   {
     ignores: ['eslint.config.mjs'],
   },
+
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettierRecommended,
   {
+    plugins: {
+      import: importPlugin
+    },
     languageOptions: {
       globals: {
         ...globals.node,
@@ -24,6 +29,8 @@ export default tseslint.config(
       },
     },
   },
+
+  // ⚠️ Regras críticas de qualidade e segurança
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
@@ -42,18 +49,24 @@ export default tseslint.config(
       '@typescript-eslint/typedef': [
         'error',
         {
-          propertyDeclaration: true, // Exige tipos explícitos em propriedades de classe
-          memberVariableDeclaration: true, // Exige tipos explícitos em variáveis de membros
+          propertyDeclaration: true,
+          memberVariableDeclaration: true,
         },
       ],
       '@typescript-eslint/explicit-function-return-type': [
         'error',
         {
-          allowExpressions: true, // Permite funções anônimas sem tipo de retorno explícito
-          allowTypedFunctionExpressions: true, // Permite expressões de função tipadas
-          allowHigherOrderFunctions: true, // Permite funções de ordem superior sem tipo de retorno explícito
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
         },
       ],
+    },
+  },
+
+  // 💅 Regras de estilo e organização
+  {
+    rules: {
       '@typescript-eslint/no-unused-vars': [
         'warn',
         {
@@ -72,15 +85,28 @@ export default tseslint.config(
         },
       ],
       'comma-dangle': [
-      'error',
+        'error',
         {
-          arrays: 'never', // Não permite vírgula no final de arrays
-          objects: 'never', // Não permite vírgula no final de objetos
-          imports: 'never', // Não permite vírgula no final de imports
-          exports: 'never', // Não permite vírgula no final de exports
-          functions: 'never', // Não permite vírgula no final de parâmetros de funções
+          arrays: 'never',
+          objects: 'never',
+          imports: 'never',
+          exports: 'never',
+          functions: 'never',
+        },
+      ],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'prefer-const': 'warn',
+      'eqeqeq': ['error', 'always'],
+      'no-fallthrough': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      'import/order': [
+        'warn',
+        {
+          groups: [['builtin', 'external'], 'internal', ['parent', 'sibling', 'index']],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
     },
-  },
+  }
 );
